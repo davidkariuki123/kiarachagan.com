@@ -125,7 +125,8 @@ button.b.ghost:hover{color:var(--deep);border-color:var(--deep)}
 .email a:hover{color:var(--red)}
 
 @media (max-width:760px){
-  .hud-top nav,.rail{display:none}
+  .hud-top nav,.rail,.hud-top .deg{display:none}
+  .hud-top{font-size:13px;padding:12px 14px}
   .card{left:14px!important;right:14px!important;bottom:14px!important;top:auto!important;max-width:none!important;transform:none!important;background:rgba(244,236,220,0.93);padding:12px 14px 14px;border-radius:3px}
   .card.br[data-s="0"],.card.bl[data-s="1"]{display:none!important}
   .card.bl[data-s="0"]{margin-left:0!important}
@@ -145,7 +146,7 @@ button.b.ghost:hover{color:var(--deep);border-color:var(--deep)}
 
 <div class="hud">
   <div class="hud-top">
-    <div><b>Kiara Chagan</b> &nbsp;Industrial &amp; Organisational Psychology Honours, UCT</div>
+    <div><b>Kiara Chagan</b> <span class="deg">&nbsp;Industrial &amp; Organisational Psychology Honours, UCT</span></div>
     <nav>
       <a href="#s1">Thesis</a><a href="#s2">Contact</a>
     </nav>
@@ -251,7 +252,7 @@ function expRing(){ return (MOB?Math.min(W,H)*0.15:Math.min(W,H)*0.16)*(EXP.Z/EX
 function expCount(){ return EXP.order.length; }
 function expLayout(){
   if(MOB){ EXP.cx=W*0.5; EXP.cy=H*0.33; } else { EXP.cx=W*0.63; EXP.cy=H*0.50; }
-  var rx=MOB?W*0.38:W*0.245, ry=MOB?H*0.20:H*0.31; EXP.c=[]; EXP.sc=MOB?0.6:1;
+  var rx=MOB?W*0.34:W*0.245, ry=MOB?H*0.20:H*0.31; EXP.c=[]; EXP.sc=MOB?0.6:1;
   for(var k=0;k<12;k++){ var a=-Math.PI/2+k*Math.PI*2/12; EXP.c.push({x:EXP.cx+Math.cos(a)*rx,y:EXP.cy+Math.sin(a)*ry}); }
 }
 function expReset(){
@@ -296,9 +297,9 @@ document.getElementById('expReset').addEventListener('click',expReset);
 
 /* ---------- the address (state 2) ---------- */
 var EM={flashAt:-1e9,copied:false};
-function emLines(){ return ['kiara@','kiarachagan.com']; }
-function emFont(){ return MOB?Math.min(W*0.112,H*0.12):Math.min(W*0.095,H*0.20); }
-function emCentreY(){ return MOB?H*0.33:H*0.40; }
+function emLines(){ return MOB?['kiara@']:['kiara@','kiarachagan.com']; }
+function emFont(){ return MOB?Math.min(W*0.25,H*0.13):Math.min(W*0.095,H*0.20); }
+function emCentreY(){ return MOB?H*0.30:H*0.40; }
 function emCopy(){
   var txt='kiara@kiarachagan.com';
   var done=function(){ EM.flashAt=performance.now(); EM.copied=true; var t=document.getElementById('cToast'); if(t){ t.classList.add('on'); setTimeout(function(){ t.classList.remove('on'); },1800); } };
@@ -323,7 +324,7 @@ function build(){
   cv.width=W*DPR; cv.height=H*DPR; ctx.setTransform(DPR,0,0,DPR,0,0);
 
   MOB=(W<720); STEP=MOB?6:13;
-  var nm=textMask(['Kiara','Chagan'],Math.min(W*0.150,H*0.27),W/2,MOB?H*0.40:H*0.455,1.22);
+  var nm=MOB?textMask(['Kiara','Chagan'],Math.min(W*0.25,H*0.13),W/2,H*0.36,1.12):textMask(['Kiara','Chagan'],Math.min(W*0.150,H*0.27),W/2,H*0.455,1.22);
   var em=textMask(emLines(),emFont(),W/2,emCentreY(),1.12);
 
   P=[];
@@ -477,10 +478,11 @@ function draw(){
     p.cur+=(tang-p.cur)*(RM?1:0.18);
     if(nV>0.02) p.cur+=nV*0.18*(p.rr-0.5);
 
+    if(MOB&&!p.nm&&!p.em&&!p.sub&&(mode===13||mode===0||mode===9)&&p.rr>0.45) continue;
     var col,wd,ln=L;
     if(mode===0){
       if(p.nm){ col=p.br?'#9e0e24':'#122438'; wd=p.br?2.6:2.5; ln=8.5; }
-      else{ col=p.br?'rgba(179,18,43,0.62)':FAINT; wd=p.br?2.0:1.5; }
+      else{ col=p.br?(MOB?'rgba(179,18,43,0.28)':'rgba(179,18,43,0.62)'):FAINT; wd=p.br?2.0:1.5; }
     }
     else if(mode===1){
       if(EXP.broken[p.exp]){ col=RED; wd=2.2; ln=7; p.cur+= (h32((k*3+((performance.now()/120)|0))%99991)-0.5)*0.25; }
@@ -489,7 +491,7 @@ function draw(){
     else if(mode===8){ col='#b98617'; wd=2.3; ln=7.5; }
     else if(mode===16){ col='rgba(185,134,23,0.32)'; wd=2.0; ln=7; }
     else if(mode===17){ col=RED; wd=2.4; ln=8; }
-    else if(mode===13){ col=p.br?(MOB?'rgba(179,18,43,0.32)':'rgba(179,18,43,0.62)'):FAINT; wd=p.br?2.0:1.5; }
+    else if(mode===13){ col=p.br?(MOB?'rgba(179,18,43,0.28)':'rgba(179,18,43,0.62)'):FAINT; wd=p.br?2.0:1.5; }
     else if(mode===30){ var fl=1-Math.min(1,(nowT-EM.flashAt)/700); col=fl>0?(p.br?'#9e0e24':'#b3122b'):(p.br?'#9e0e24':'#122438'); wd=2.5; ln=8.5; }
     else { if(p.sub) continue; col='rgba(29,58,84,0.06)'; wd=1.4; }
 
@@ -513,14 +515,15 @@ function draw(){
       var cc=EXP.c[kk], bk2=EXP.broken[kk];
       ctx.font=(MOB?'600 9.5px':'600 12.5px')+' "HostGrotesk", sans-serif';
       ctx.fillStyle=bk2?'#b3122b':'#3d2f1c';
-      ctx.fillText(EXP.labels[kk], cc.x, cc.y+(MOB?32:50));
+      var lx=MOB?Math.min(Math.max(cc.x,54),W-54):cc.x;
+      ctx.fillText(EXP.labels[kk], lx, cc.y+(MOB?32:50));
       /* the state pill */
       var pillT=bk2?'Not met':'Met'; ctx.font=(MOB?'700 8.5px':'700 10.5px')+' "HostGrotesk", sans-serif';
-      var pw=ctx.measureText(pillT).width+(MOB?10:14), px0=cc.x-pw/2, py0=cc.y+(MOB?37:58), ph=MOB?13:16;
+      var pw=ctx.measureText(pillT).width+(MOB?10:14), px0=lx-pw/2, py0=cc.y+(MOB?37:58), ph=MOB?13:16;
       ctx.beginPath(); ctx.roundRect(px0,py0,pw,ph,8);
       if(bk2){ ctx.fillStyle='#b3122b'; ctx.fill(); ctx.fillStyle='#f4ecdc'; }
       else { ctx.strokeStyle='rgba(107,83,52,0.7)'; ctx.lineWidth=1; ctx.stroke(); ctx.fillStyle='#6b5334'; }
-      ctx.fillText(pillT, cc.x, py0+11.5);
+      ctx.fillText(pillT, lx, py0+11.5);
       /* hover hint */
       if(EXP.hov===kk&&!bk2&&!MOB){ ctx.font='600 11.5px "HostGrotesk", sans-serif'; ctx.fillStyle='#122438';
         var ht='Click: the firm does not provide this', hw=ctx.measureText(ht).width+12;
